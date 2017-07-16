@@ -1,0 +1,70 @@
+body, .root{
+  width: 100%;
+  max-width: 100%;
+}
+
+.root {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.app-header {
+  background-color: black;
+  text-align: center;
+}
+
+.app-header h1 {
+  -webkit-text-stroke: 1px #fdd700;
+  color: black;
+  text-shadow: -1px 1px 0 #fdd700;
+}
+
+.app-header h3 {
+  color: #fdd700;
+  word-wrap: break-word;
+  padding-bottom: 20px;
+  margin-bottom: 0;
+}
+
+.header-image {
+  height: 80px;
+  border-radius: 50%;
+  margin-top: 20px;
+}
+
+.search-region {
+  width: auto;
+  background-color: #eee;
+}
+.search-bar.form-control {
+  width: 30%;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 10px 0 10px 20px;
+}
+
+.search-button {
+  display: inline-block;
+}
+
+.table-container {
+  width: 100%;
+  overflow: auto;
+  overflow-y: hidden;
+}
+
+.pagination-buttons {
+  float: right;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.pagination-option {
+  margin-right: 10px;
+}
+
+.pagination-option:hover {
+  cursor: pointer;
+}
