@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {fetchPage, fetchSearchResults} from '../actions';
+import {fetchPage, fetchSearchResults, fetchFilms} from '../actions';
 import axios from 'axios';
 
 import Planet from './planet';
@@ -16,19 +16,62 @@ class Detail extends Component {
     }
     this.onClickHandler = this.onClickHandler.bind(this);
     this.onChangeHandler = this.onChangeHandler.bind(this);
+    this.onSubmitHandler = this.onSubmitHandler.bind(this);
   }
 
   componentWillMount() {
-    this.props.fetchPage(this.state.currentPage);
+    const {currentPage} = this.state;
+    const {films, fetchFilms, fetchPage} = this.props;
+
+    fetchPage(currentPage);
+
+    if(Object.keys(films).length === 0) {
+      fetchFilms();
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {next, previous} = nextProps.page;
+
+    if (next === null && previous === null) {
+      this.setState({currentPage: 1});
+      return;
+    }
+
+    if (next === null) {
+      let prevPage = Number(previous.slice(previous.length-1, previous.length));
+      this.setState({currentPage: prevPage+1});
+      return;
+    } else {
+      let nextPage = Number(next.slice(next.length-1, next.length));
+      this.setState({currentPage: nextPage-1});
+      return;
+    }
+
+
   }
 
   renderTableRows() {
     const planets = this.props.page.results;
+    const {films} = this.props;
 
-    if (!planets) {
+    if (!planets || Object.keys(films).length === 0) {
       return <tr></tr>
     }
+
     return planets.map((planet, index) => {
+      const filmsLength = planet.films.length;
+      const filmTitles = planet.films.map((film, index) => {
+        let filmNumber = film.slice(film.length-2, film.length-1);
+        return (
+          <span
+            className='film-list'
+            key={filmNumber}>
+            {films[filmNumber].title}{filmsLength-1 === index ? '' : ','}
+          </span>
+        );
+      });
+
       return (
         <Planet
           name={planet.name}
@@ -36,7 +79,7 @@ class Detail extends Component {
           population={planet.population}
           orbitalPeriod={planet.orbital_period}
           rotationPeriod={planet.rotation_period}
-          films={planet.films}
+          films={filmTitles}
           terrain={planet.terrain}
           key={index}
           />
@@ -49,22 +92,62 @@ class Detail extends Component {
   }
 
   onClickHandler(pageId, endPoint) {
-    this.props.fetchPage(pageId, endPoint);
-    this.setState({currentPage: pageId});
+    const {fetchPage} = this.props;
+    fetchPage(pageId, endPoint);
   }
 
   onSubmitHandler(event) {
+    const {fetchSearchResults} = this.props;
+    const {searchTerm} = this.state;
+
     event.preventDefault();
-    this.props.fetchSearchResults(this.state.searchTerm);
+    fetchSearchResults(searchTerm);
+  }
+
+  renderPaginator() {
+    const {count, next, previous} = this.props.page;
+    const {currentPage} = this.state;
+    const lastPageNumber = Math.ceil(count/10);
+    const firstPaginator = <li key={0} className={currentPage === 1 ? 'disabled' : ''} onClick={() => {this.onClickHandler(1)}}><a>First</a></li>;
+    const prevPaginator = <li key={-1} className={currentPage === 1 ? 'disabled' : ''} onClick={() => {this.onClickHandler(null, previous)}}><a>{'<<'}</a></li>;
+    const nextPaginator = <li key={-2} className={currentPage === lastPageNumber ? 'disabled' : ''} onClick={() => {this.onClickHandler(null, next)}}><a>{'>>'}</a></li>;
+    const lastPaginator = <li key={lastPageNumber+1} className={currentPage === lastPageNumber ? 'disabled' : ''} onClick={() => {this.onClickHandler(lastPageNumber)}}><a>Last</a></li>;
+    let pageNumbers = [];
+    let i = 1;
+    while (i <= lastPageNumber) {
+      pageNumbers.push(i);
+      i++;
+    }
+    const pagesArray = pageNumbers.map((number) => {
+
+      return (
+        <li
+          key={number}
+          className={number === currentPage ? 'active' : ''}
+          onClick={() => {this.onClickHandler(number)}}>
+          <a>{number}</a>
+        </li>
+      );
+    });
+
+    pagesArray.unshift(prevPaginator);
+    pagesArray.unshift(firstPaginator);
+    pagesArray.push(nextPaginator);
+    pagesArray.push(lastPaginator);
+    return (
+      <ul className='pagination pagination-sm'>
+        {pagesArray.length > 4 ? pagesArray : ''}
+      </ul>
+    );
   }
 
   render () {
-    const {page} = this.props;
+    const {page, films} = this.props;
 
-    if (!page) {
+    if (!page && !films) {
       return <div></div>
     }
-
+    console.log(this.state.currentPage);
     return (
       <div>
         <div className='search-region'>
@@ -95,16 +178,7 @@ class Detail extends Component {
           </table>
         </div>
         <div className='pagination-buttons'>
-          <ul className='pagination pagination-lg'>
-            <li><a>First</a></li>
-            <li><a>First</a></li>
-            <li><a>{First}</a></li>
-            <li><a>Last</a></li>
-          </ul>
-          <span className='pagination-option' onClick={() => {this.onClickHandler(1);}}>First</span>
-          <span className='pagination-option' onClick={() => {this.onClickHandler(null, page.previous);}}>{'<'}</span>
-          <span className='pagination-option' onClick={() => {this.onClickHandler(null, page.next);}}>{'>'}</span>
-          <span className='pagination-option' onClick={() => {this.onClickHandler(7);}}>Last</span>
+            {this.renderPaginator()}
         </div>
       </div>
 
@@ -113,7 +187,10 @@ class Detail extends Component {
 }
 
 function mapStateToProps(state) {
-    return {page: state.page};
+    return {
+      page: state.page,
+      films: state.films
+    };
 }
 
-export default connect(mapStateToProps, {fetchPage, fetchSearchResults})(Detail);
+export default connect(mapStateToProps, {fetchPage, fetchSearchResults, fetchFilms})(Detail);

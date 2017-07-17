@@ -13,9 +13,6 @@ class Planet extends Component {
       terrain: '',
       films: []
     }
-
-    this.getFilmTitles = this.getFilmTitles.bind(this);
-    // this.displayFilmTitles = this.displayFilmTitles.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -23,7 +20,7 @@ class Planet extends Component {
 
     if (this.props.name !== name) {
       this.setState({name, population, orbitalPeriod, rotationPeriod, diameter, terrain, films});
-      this.getFilmTitles(nextProps);
+      //this.getFilmTitles(nextProps);
     }
   }
 
@@ -31,29 +28,6 @@ class Planet extends Component {
     const {name, population, orbitalPeriod, rotationPeriod, diameter, terrain, films} = this.props;
 
     this.setState({name, population, orbitalPeriod, rotationPeriod, diameter, terrain, films});
-  }
-
-  componentDidMount() {
-    this.getFilmTitles(this.state);
-  }
-
-  getFilmTitles(planet) {
-    const newArray = [];
-    planet.films.map((film, index) => {
-      fetch(film)
-          .then((response) => {
-              return response.json();
-          })
-          .then((data) => {
-            newArray.push(<span key={data.title}>{data.title}<br/></span>);
-            this.setState({films: newArray});
-          })
-          .catch((error) => {
-              console.log(error)
-          })
-    });
-
-
   }
 
   render() {

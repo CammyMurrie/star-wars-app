@@ -38,14 +38,16 @@ body, .root{
   width: auto;
   background-color: #eee;
 }
+
 .search-bar.form-control {
   width: 30%;
   display: inline-block;
   vertical-align: middle;
-  margin: 10px 0 10px 20px;
+  margin: 10px 0 10px 2%;
 }
 
 .search-button {
+  width: 8%;
   display: inline-block;
 }
 
@@ -55,16 +57,55 @@ body, .root{
   overflow-y: hidden;
 }
 
+.film-list {
+  display: block;
+}
+
 .pagination-buttons {
   float: right;
   margin-right: 20px;
   margin-bottom: 20px;
+  /*width: 100%;
+  text-align: center;*/
 }
 
-.pagination-option {
-  margin-right: 10px;
+.pagination-sm>li>a {
+  color: #000 !important;
+}
+
+.pagination-sm>li.active>a{
+  background-color: #000 !important;
+  border-color: #000 !important;
+  color: #fff !important;
 }
 
 .pagination-option:hover {
   cursor: pointer;
+}
+
+@media only screen and (max-width: 768px) {
+
+  .search-bar.form-control {
+    width: 76%;
+  }
+  .search-button {
+    width: 20%;
+    margin-right: 2%;
+  }
+  table th {
+    font-size: 12px;
+  }
+
+  table td {
+    font-size: 10px;
+  }
+  .pagination-buttons {
+    width: 100%;
+    text-align: center;
+    margin-right: 0;
+  }
+
+  .pagination-sm>li>a {
+    font-size: 10px !important;
+  }
 }
