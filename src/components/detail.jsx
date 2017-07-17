@@ -12,7 +12,13 @@ class Detail extends Component {
 
     this.state = {
       currentPage: 1,
-      searchTerm: ''
+      searchTerm: '',
+      activeColumn: '',
+      nameAsc: false,
+      popAsc: false,
+      diameterAsc: false,
+      rotAsc: false,
+      orbAsc: false
     }
     this.onClickHandler = this.onClickHandler.bind(this);
     this.onChangeHandler = this.onChangeHandler.bind(this);
@@ -54,9 +60,31 @@ class Detail extends Component {
   renderTableRows() {
     const planets = this.props.page.results;
     const {films} = this.props;
+    const {nameAsc, diameterAsc, popAsc, orbAsc, rotAsc, activeColumn} = this.state;
+    const numberColumns = ['DIAMETER', 'ROTATION_PERIOD', 'ORBITAL_PERIOD', 'POPULATION'];
+    const sortableColumns = {
+      'DIAMETER': diameterAsc,
+      'ROTATION_PERIOD': rotAsc,
+      'ORBITAL_PERIOD': orbAsc,
+      'NAME': nameAsc,
+      'POPULATION': popAsc
+    };
 
     if (!planets || Object.keys(films).length === 0) {
       return <tr></tr>
+    }
+    if (numberColumns.includes(activeColumn)) {
+      planets.sort(compareNumberAttr(activeColumn.toLowerCase()));
+      if (!sortableColumns[activeColumn]) {
+        planets.reverse();
+      }
+    }
+
+    if (activeColumn === 'NAME') {
+      planets.sort(compareName);
+      if (!sortableColumns[activeColumn]) {
+        planets.reverse();
+      }
     }
 
     return planets.map((planet, index) => {
@@ -141,13 +169,30 @@ class Detail extends Component {
     );
   }
 
+  showColumnLabel(column) {
+    const {nameAsc, diameterAsc, popAsc, orbAsc, rotAsc, activeColumn} = this.state;
+    const sortableColumns = {
+      'DIAMETER': diameterAsc,
+      'ROTATION_PERIOD': rotAsc,
+      'ORBITAL_PERIOD': orbAsc,
+      'NAME': nameAsc,
+      'POPULATION': popAsc
+    };
+    const label = sortableColumns[column] ? <span className='glyphicon glyphicon-arrow-up'></span> : <span className='glyphicon glyphicon-arrow-down'></span>;
+
+    if (column === activeColumn) {
+      return label;
+    }
+  }
+
   render () {
     const {page, films} = this.props;
+    const {nameAsc, diameterAsc, popAsc, orbAsc, rotAsc, activeColumn} = this.state;
 
     if (!page && !films) {
       return <div></div>
     }
-    console.log(this.state.currentPage);
+
     return (
       <div>
         <div className='search-region'>
@@ -163,11 +208,71 @@ class Detail extends Component {
           <table className='table table-striped table-bordered table-hover table-condensed'>
             <thead>
               <tr>
-                <th>NAME</th>
-                <th>POPULATION</th>
-                <th>DIAMETER</th>
-                <th>ROTATION PERIOD</th>
-                <th>ORBITAL PERIOD</th>
+                <th
+                  onClick={() => {
+                    this.setState({
+                      activeColumn: 'NAME',
+                      nameAsc: !nameAsc,
+                      popAsc: false,
+                      diameterAsc: false,
+                      rotAsc: false,
+                      orbAsc: false
+                    })
+                  }}>
+                  NAME {this.showColumnLabel('NAME')}
+                </th>
+                <th
+                  onClick={() => {
+                    this.setState({
+                      activeColumn: 'POPULATION',
+                      popAsc: !popAsc,
+                      nameAsc: false,
+                      diameterAsc: false,
+                      rotAsc: false,
+                      orbAsc: false
+                    })
+                  }}>
+                  POPULATION {this.showColumnLabel('POPULATION')}
+                </th>
+                <th
+                  onClick={() => {
+                    this.setState({
+                      activeColumn: 'DIAMETER',
+                      diameterAsc: !diameterAsc,
+                      popAsc: false,
+                      nameAsc: false,
+                      rotAsc: false,
+                      orbAsc: false
+                    })
+                  }}>
+                  DIAMETER {this.showColumnLabel('DIAMETER')}
+                </th>
+                <th
+                  onClick={() => {
+                    this.setState({
+                      activeColumn: 'ROTATION_PERIOD',
+                      rotAsc: !rotAsc,
+                      diameterAsc: false,
+                      popAsc: false,
+                      nameAsc: false,
+                      orbAsc: false
+                    })
+                  }}>
+                  ROTATION PERIOD {this.showColumnLabel('ROTATION_PERIOD')}
+                </th>
+                <th
+                  onClick={() => {
+                    this.setState({
+                      activeColumn: 'ORBITAL_PERIOD',
+                      orbAsc: !orbAsc,
+                      rotAsc: false,
+                      diameterAsc: false,
+                      popAsc: false,
+                      nameAsc: false
+                    })
+                  }}>
+                  ORBITAL PERIOD {this.showColumnLabel('ORBITAL_PERIOD')}
+                </th>
                 <th>TERRAIN</th>
                 <th>FILMS</th>
               </tr>
@@ -184,6 +289,31 @@ class Detail extends Component {
 
     );
   }
+}
+
+function compareNumberAttr(attr) {
+  return function(a, b) {
+    if (Number(a[attr]) > Number(b[attr])) {
+      return 1;
+    }
+    if (Number(a[attr]) < Number(b[attr])) {
+      return -1;
+    }
+    if (isNaN(a[attr]) ) {
+      return 1;
+    }
+    return 0;
+  }
+}
+
+function compareName(a, b) {
+  if (a.name < b.name) {
+    return -1;
+  }
+  if (a.name > b.name) {
+    return 1;
+  }
+  return 0;
 }
 
 function mapStateToProps(state) {
