@@ -20,7 +20,6 @@ class Planet extends Component {
 
     if (this.props.name !== name) {
       this.setState({name, population, orbitalPeriod, rotationPeriod, diameter, terrain, films});
-      //this.getFilmTitles(nextProps);
     }
   }
 

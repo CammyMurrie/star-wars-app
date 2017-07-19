@@ -28,9 +28,11 @@ export class Detail extends Component {
   componentWillMount() {
     const {currentPage} = this.state;
     const {films, fetchFilms, fetchPage} = this.props;
+    //mounts component (happens once during a component lifecycle)
+    //and gets data from the API end points for the current page and all the films.
 
     fetchPage(currentPage);
-
+    //checks to see if there are any values in the films object
     if(Object.keys(films).length === 0) {
       fetchFilms();
     }
@@ -38,6 +40,8 @@ export class Detail extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {next, previous} = nextProps.page;
+    //this function is called when the component receives new props
+    //code in here checks for the next and previous key value pairs and sets state accordingly
 
     if (next === null && previous === null) {
       this.setState({currentPage: 1});
@@ -58,6 +62,8 @@ export class Detail extends Component {
   }
 
   renderTableRows() {
+    //in a nutshell this function checks if any of the columns are "active" i.e. are currently being sorted by
+    // and then returns the list of planets in the correct order by calling compareNumberAttr or compareName.
     const planets = this.props.page.results;
     const {films} = this.props;
     const {nameAsc, diameterAsc, popAsc, orbAsc, rotAsc, activeColumn} = this.state;

@@ -80,11 +80,9 @@ table th.sortable:hover {
   border-color: #000 !important;
   color: #fff !important;
 }
-
-.pagination-option:hover {
+.pagination-sm>li:hover {
   cursor: pointer;
 }
-
 @media only screen and (max-width: 768px) {
 
   .search-bar.form-control {
