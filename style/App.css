@@ -57,6 +57,10 @@ body, .root{
   overflow-y: hidden;
 }
 
+table th.sortable:hover {
+  cursor: pointer;
+}
+
 .film-list {
   display: block;
 }
@@ -65,8 +69,6 @@ body, .root{
   float: right;
   margin-right: 20px;
   margin-bottom: 20px;
-  /*width: 100%;
-  text-align: center;*/
 }
 
 .pagination-sm>li>a {

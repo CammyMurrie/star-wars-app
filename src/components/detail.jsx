@@ -4,8 +4,8 @@ import {fetchPage, fetchSearchResults, fetchFilms} from '../actions';
 import axios from 'axios';
 
 import Planet from './planet';
-
-class Detail extends Component {
+//exporting for testing purpses as well as connected component for default.
+export class Detail extends Component {
 
   constructor(props) {
     super(props);
@@ -187,7 +187,7 @@ class Detail extends Component {
 
   render () {
     const {page, films} = this.props;
-    const {nameAsc, diameterAsc, popAsc, orbAsc, rotAsc, activeColumn} = this.state;
+    const {nameAsc, diameterAsc, popAsc, orbAsc, rotAsc, activeColumn, searchTerm} = this.state;
 
     if (!page && !films) {
       return <div></div>
@@ -200,6 +200,7 @@ class Detail extends Component {
             <input
               className='search-bar form-control'
               onChange={event => this.onChangeHandler(event)}
+              value={searchTerm}
                />
             <input type='submit' value='Search' className='btn search-button'/>
           </form>
@@ -209,6 +210,7 @@ class Detail extends Component {
             <thead>
               <tr>
                 <th
+                  className='sortable'
                   onClick={() => {
                     this.setState({
                       activeColumn: 'NAME',
@@ -222,6 +224,7 @@ class Detail extends Component {
                   NAME {this.showColumnLabel('NAME')}
                 </th>
                 <th
+                  className='sortable'
                   onClick={() => {
                     this.setState({
                       activeColumn: 'POPULATION',
@@ -235,6 +238,7 @@ class Detail extends Component {
                   POPULATION {this.showColumnLabel('POPULATION')}
                 </th>
                 <th
+                  className='sortable'
                   onClick={() => {
                     this.setState({
                       activeColumn: 'DIAMETER',
@@ -248,6 +252,7 @@ class Detail extends Component {
                   DIAMETER {this.showColumnLabel('DIAMETER')}
                 </th>
                 <th
+                  className='sortable'
                   onClick={() => {
                     this.setState({
                       activeColumn: 'ROTATION_PERIOD',
@@ -261,6 +266,7 @@ class Detail extends Component {
                   ROTATION PERIOD {this.showColumnLabel('ROTATION_PERIOD')}
                 </th>
                 <th
+                  className='sortable'
                   onClick={() => {
                     this.setState({
                       activeColumn: 'ORBITAL_PERIOD',

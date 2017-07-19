@@ -33,10 +33,6 @@ class Planet extends Component {
   render() {
     const {name, population, orbitalPeriod, rotationPeriod, diameter, terrain, films} = this.state;
 
-    if (films.length > 0 && films[0].toString().includes('http')) {
-      return <tr></tr>
-    }
-
         return (
           <tr>
             <td>{name}</td>
