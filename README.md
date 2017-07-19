@@ -1,5 +1,5 @@
 DESIGN DECISIONS
-1. Javascript framework/library used in React.js, only because this is what I am most comfortable with and knew I could manage the pagination through application state (Redux).
+1. Javascript framework/library used is React.js, I knew I could manage the pagination through application state (Redux).
 
 INSTRUCTIONS FOR RUNNING...
 
